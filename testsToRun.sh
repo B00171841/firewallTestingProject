@@ -1,0 +1,49 @@
+# Focus is on detailled explanation of firewall configuration, not the sophistication of attacks.
+sudo su # Make sure you are sudo for all of these commands.
+
+firewall_ip=  # Replace with IP
+web_server_ip=192.168.5.253
+
+# Reconissance attacks - Seeing if an attacker can see the services running on web server mainly, also firewall.
+## Will run tcp SYN scan by default.
+nmap  firewall_ip
+nmap  web_server_ip
+
+## UDP scans are pointless due to ssh and http using TCP.
+
+
+# Packet fragmentation
+## Using nmap (may bypass filter rules to block port scanning
+nmap -f firewall_ip
+nmap -f web_server_ip
+
+# Ping and hping3 - goal is to see if pings are possible and if fragmentation affects if they're blocked or not.
+
+## Will test if ping is allowed, along with larger than 1500 byte packets.
+ping -s 6000 firewall_ip
+ping -s 6000 web_server_ip 
+
+## Testing strength of packet filter
+hping3 -1 -f firewall_ip   # -1 uses ICMP, -f fragments packets
+hping3 -1 -f web_server_ip 
+
+
+
+
+# Firewall security - Goal is to set up rate limiting.
+
+## Rate limiting interfaces. floods address with traffic.
+hping3 --flood web_server_ip
+hping3 --flood firewall_ip
+
+## Testing ssh timeout (we aren't going to crack password)
+### -L and -P are usernames and password, /dev/null will mean it wont use any username or password. -t is number of simultaneous connections, -s is port.
+hydra  -L /dev/null -P /dev/null -t 3 -s 22 ssh://firewall_ip
+hydra  -L /dev/null -P /dev/null -t 3 -s 22 ssh://web_server_ip
+
+## Using wrk to load test web servers
+### -t is threads, -c is connections, -d is duration
+wrk -t 4 -c 4 -d 20 http://firewall_ip
+wrk -t 4 -c 4 -d 20 http://web_server_ip
+
+sudo apt install wrk # Wrk may not be installed in kali.
