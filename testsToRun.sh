@@ -36,10 +36,8 @@ hping3 -1 -f web_server_ip
 hping3 --flood web_server_ip
 hping3 --flood firewall_ip
 
-## Testing ssh timeout (we aren't going to crack password)
-### -L and -P are usernames and password, /dev/null will mean it wont use any username or password. -t is number of simultaneous connections, -s is port.
-hydra  -L /dev/null -P /dev/null -t 3 -s 22 ssh://firewall_ip
-hydra  -L /dev/null -P /dev/null -t 3 -s 22 ssh://web_server_ip
+## To test timeout, manyally ssh with incorrect credentials
+ssh root@firewall_ip 
 
 ## Using wrk to load test web servers
 ### -t is threads, -c is connections, -d is duration
