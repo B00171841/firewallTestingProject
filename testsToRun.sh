@@ -5,7 +5,7 @@ firewall_ip=  # Replace with IP
 web_server_ip=192.168.5.253
 
 # Reconissance attacks - Seeing if an attacker can see the services running on web server mainly, also firewall.
-## This will take several minutes, scans all ports. Returns open ports, http string and OS information.
+## This will take several minutes, scans all ports. Returns open ports, http string and OS information. -T4 is for timing, if you remove this its less likely to be detected.
 nmap -A -p- -T4 firewall_ip
 nmap -A -p- -T4  web_server_ip
 
