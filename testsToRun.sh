@@ -39,3 +39,7 @@ hydra -l root -t 3 -P /usr/share/wordlists/rockyou.txt ssh://firewall_ip:22 # Yo
 wrk -t 4 -c 4 -d 20 http://firewall_ip
 
 sudo apt install wrk # Wrk is not be installed in kali.
+
+# If apt doesnt work
+sudo wget https://archive.kali.org/archive-keyring.gpg -O /usr/share/keyrings/kali-archive-keyring.gpg
+sudo apt update
